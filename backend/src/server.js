@@ -1,6 +1,7 @@
 // /src/server.js
 const express = require('express');
 const dotenv = require('dotenv');
+const path = require('path')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDB = require('../config/db.js'); // Ensure this path is correct
@@ -13,7 +14,7 @@ dotenv.config();
 
 // Connect to MongoDB
 connectDB();
-
+const __dirname = path.resolve()
 // Log to check if variables are loaded
 const app = express();
 app.use(cors());
@@ -33,6 +34,12 @@ app.use((err, req, res, next) => {
 
 // Define the port
 const PORT = process.env.PORT || 8083;
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+    app.get("*", (req, res) => {
+      res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+    });
 
 // Start the server
 app.listen(PORT, (err) => {
